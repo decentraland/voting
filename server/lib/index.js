@@ -13,7 +13,8 @@ app.get('/', (req, res) => {
     .status(200)
     .json({
       ok: true,
-      data: null
+      status: 200,
+      data: []
     })
 })
 
@@ -26,7 +27,7 @@ if (app.get('env') === 'development') {
   app.use(function (err, req, res, next) {
     res.status(err.code || 500)
       .json({
-        status: 'error',
+        status: 500,
         message: err
       })
   })
@@ -35,7 +36,7 @@ if (app.get('env') === 'development') {
 app.use(function (err, req, res, next) {
   res.status(err.status || 500)
     .json({
-      status: 'error',
+      status: 500,
       message: err.message
     })
 })
