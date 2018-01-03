@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const pgdb = require('../database/pgdb')()
 
 /**
  * @swagger
@@ -27,20 +28,19 @@ const router = express.Router()
  *         id: Integer
  *         ok: Boolean, operation status
  */
-router.get('/:subject', (req, res) => {
+router.get('/:subject', async (req, res) => {
   try {
-    const params = req.params
-    console.log(params)
-    /**
-     * Business Logic, return votes
-     * 
-     */
+    const subject = req.params.subject
+
+    const data = await pgdb.getSubject(subject)
+      .then(data => data)
+
     res
       .status(200)
       .json({
         ok: true,
         statusCode: 200,
-        votes: null
+        data
       })
   } catch (error) {
     res.status(500).json({ error: error.toString() })
