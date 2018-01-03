@@ -103,23 +103,4 @@ router.get('/:subject/votes', (req, res) => {
   }
 })
 
-router.get('/:subject/votes', (req, res) => {
-  try {
-    const params = req.params
-    /**
-     * Business Logic, return votes
-     * 
-     */
-    res
-      .status(200)
-      .json({
-        ok: true,
-        statusCode: 200,
-        votes: null
-      })
-  } catch (error) {
-    res.status(500).json({ error: error.toString() })
-  }
-})
-
 module.exports = router
