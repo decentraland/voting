@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const validations = require('./validations')
+const pgdb = require('../database/pgdb')()
 
 /**
  * @swagger
@@ -28,11 +29,11 @@ const validations = require('./validations')
  *         id: Integer
  *         ok: Boolean, operation status
  */
-router.post('/:subject/votes', (req, res) => {
+router.post('/:subject/votes', async (req, res) => {
   try {
     const stack = req.body
     /* validate all parameters */
-    console.log(stack)
+
     const validate = validations.validateSubject(stack)
     if (!validate) {
       res
@@ -43,15 +44,14 @@ router.post('/:subject/votes', (req, res) => {
         })
     }
 
-    /**
-     * Business Logic, return votes
-     * 
-     */
+    const data = await pgdb.postVotesPerSubject(stack)
+
     res
       .status(200)
       .json({
         ok: true,
-        statusCode: 200
+        statusCode: 200,
+        data
       })
   } catch (error) {
     res.status(500).json({ error: error.toString() })
@@ -84,19 +84,17 @@ router.post('/:subject/votes', (req, res) => {
  *         id: Integer
  *         ok: Boolean, operation status
  */
-router.get('/:subject/votes', (req, res) => {
+router.get('/:subject/votes', async (req, res) => {
   try {
-    const params = req.params
-    console.log(params)
-    /**
-     * Business Logic, return votes
-     * 
-     */
+    const subject = req.params.subject
+    const data = await pgdb.getVotesPerSubject(subject)
+
     res
       .status(200)
       .json({
         ok: true,
-        statusCode: 200
+        statusCode: 200,
+        data
       })
   } catch (error) {
     res.status(500).json({ error: error.toString() })

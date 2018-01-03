@@ -40,9 +40,7 @@ const router = express.Router()
 router.get('/:subject/votes/:address', (req, res) => {
   try {
     const params = req.params
-    /**
-     * Business Logic, return votes
-     */
+
     res
       .status(200)
       .json({

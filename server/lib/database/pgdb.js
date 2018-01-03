@@ -16,6 +16,21 @@ module.exports = pgPool => {
           no_count: 100
         })
       })
+    },
+    getVotesPerSubject (data) {
+      return new Promise(resolve => {
+        resolve({ok: true})
+      })
+    },
+    postVotesPerSubject (subject) {
+      return new Promise(resolve => {
+        resolve({ok: true})
+      })
+    },
+    getSubjectPerAddress (subject, address) {
+      return new Promise(resolve => {
+        resolve({ok: true})
+      })
     }
   }
 }
