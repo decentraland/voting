@@ -1,4 +1,4 @@
-const { nodeEnv } = require('./utils')
+const { nodeEnv, setGlobalMiddleware } = require('./utils')
 console.log(`Running in ${nodeEnv} mode...`)
 
 // const pg = require('pg')
@@ -7,14 +7,17 @@ console.log(`Running in ${nodeEnv} mode...`)
 // const pgdb = require('../database/pgdb')(pgPool)
 
 const app = require('express')()
+setGlobalMiddleware(app)
+const routes = require('./routes')
+
+app.use('/', routes)
 
 app.get('/', (req, res) => {
   res
     .status(200)
     .json({
       ok: true,
-      status: 200,
-      data: []
+      status: 200
     })
 })
 
