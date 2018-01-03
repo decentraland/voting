@@ -1,10 +1,10 @@
 import React, {Component} from 'react'
 
-import VoteSummary from './VoteSummary'
-import VoteList from './VoteList'
-import './styles.scss'
+import VoteSummary from '../components/VoteSummary'
+import VoteList from '../components/VoteList'
+import '../components/styles.css'
 
-export default class Vote extends Component {
+export default class VoteContainer extends Component {
 
   constructor (props) {
     super(props)
@@ -13,16 +13,20 @@ export default class Vote extends Component {
     this.toggleSeeVote = this.toggleSeeVote.bind(this)
   }
 
-  reload () {
-    setTimeout(() => {
-      this.isDapp = true
-      this.forceUpdate()
-    }, 3000)
+  componentDidMount () {
+    this.simulate()
+  }
 
-    setTimeout(() => {
-      this.voted = true
-      this.forceUpdate()
-    }, 10000)
+  async simulate () {
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
+
+    await sleep(3000)
+    this.isDapp = true
+    this.forceUpdate()
+
+    await sleep(5000)
+    this.voted = true
+    this.forceUpdate()
   }
 
   toggleSeeVote () {
@@ -50,31 +54,30 @@ export default class Vote extends Component {
       }
     } //this.props
 
-    this.reload()
     return <div className='container'>
       <h1>Decentraland Community Feedback</h1>
-      <VoteSummary subject
-                   participantsNumber
-                   participantsPercentage
-                   positive
-                   negative
-                   abstentions />
+      <VoteSummary subject={subject}
+                   participantsNumber={participantsNumber}
+                   participantsPercentage={participantsPercentage}
+                   positive={positive}
+                   negative={negative}
+                   abstentions={abstentions} />
       <a onClick={this.toggleSeeVote}>{seeVote ? 'Back' : 'See votes'}</a>
       { seeVote && <VoteList /> }
-      { isDapp &&
+      { (isDapp && !seeVote) &&
       <div>
         <p className={'your-vote'}>{'Your Vote:'}</p>
         { voted &&
-          <div>
-            <p className='small-title'>{'Address:'}</p>
-            <p className='small-value'>{user.address}</p>
-            <p className='small-title'>{'Vote weight:'}</p>
-            <p className='small-value'>{`${user.weight}`}</p>
-            <p className='small-title'>{'Your vote:'}</p>
-            <p className='small-value'>{`${user.vote}`}</p>
-            <p className='small-title'>{'Submission:'}</p>
-            <p className='small-value link'>{`${user.weight} MANA`}</p>
-          </div>
+        <div>
+          <p className='small-title'>{'Address:'}</p>
+          <p className='small-value'>{user.address}</p>
+          <p className='small-title'>{'Vote weight:'}</p>
+          <p className='small-value'>{`${user.weight}`}</p>
+          <p className='small-title'>{'Your vote:'}</p>
+          <p className='small-value'>{`${user.vote}`}</p>
+          <p className='small-title'>{'Submission:'}</p>
+          <p className='small-value link'>{`${user.weight} MANA`}</p>
+        </div>
         }
         <div className='vote-actions'>
           <button className={'yes'}>{'Yes'}</button>

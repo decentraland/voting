@@ -1,12 +1,3 @@
-$size-1: 14px;
-$size-2: 16px;
-$size-3: 18px;
-$size-4: 24px;
-$size-5: 28px;
-$green: lawngreen;
-$orange: orangered;
-$purple: purple;
-
 .container {
   width: 100%;
   max-width: 900px;
@@ -15,32 +6,37 @@ $purple: purple;
 }
 
 h1{
-  font-size: $size-4;
+  font-size: 24px;
   font-weight: 100;
+  color: #6b618e
 }
 
 .subject{
   padding: 0 150px;
-  font-size: $size-5;
+  font-size: 28px;
   line-height: 1.3;
-  margin: 30px 0;
+  margin: 40px 0;
+  color: #6b618e
 }
 
 .vote-summary {
-  background: #fefefe;
-  box-shadow: 1px 1px 1px 1px #000;
+  background: #fcfcfc;
+  -webkit-box-shadow: 2px 1px 5px 4px rgba(237,237,237,1);
+  -moz-box-shadow: 2px 1px 5px 4px rgba(237,237,237,1);
+  box-shadow: 2px 1px 5px 4px rgba(237,237,237,1);
   padding: 20px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 30px;
-  div{
-    text-align: center;
-  }
+}
+
+.vote-summary > div{
+  text-align: center;
 }
 
 .vote-summary-title {
-  font-size: $size-1;
-  color: #a0a0a0;
+  font-size: 14px;
+  color: #d5d5d5;
   text-transform: uppercase;
   margin-bottom: 30px;
 }
@@ -48,28 +44,32 @@ h1{
 a, button {
   border-radius: 3px;
   border: none;
-  background: #e2e2e2;
+  background: #ebebeb;
   padding: 15px 0;
   margin: 15px 40px;
   display: inline-block;
-  font-size: $size-1;
+  font-size: 14px;
   min-width: 150px;
   cursor: pointer;
-  &.yes{
-    background-color: $green;
-    color: #fff;
-  }
-  &.no {
-    background-color: $orange;
-    color: #fff;
-  }
-  &:hover{
-    background: inherit;
-  }
+}
+
+a:hover, button:hover{
+  background: inherit;
+}
+
+.yes{
+   background-color: #30d7a9;
+   color: #fff;
+}
+
+.no {
+   background-color: #ef8338;
+   color: #fff;
 }
 
 .your-vote{
-  font-size: $size-5;
+  font-size: 24px;
+  color: #6b618e;
 }
 
 .vote-actions{
@@ -79,14 +79,16 @@ a, button {
 
 .small-value {
   font-weight: 200;
-  font-size: $size-1;
+  font-size: 14px;
   margin: 10px auto;
-  &.link{
-    color: deepskyblue;
-  }
 }
+
+.small-value.link{
+  color: deepskyblue;
+}
+
 .small-title{
-  font-size: $size-1;
+  font-size: 14px;
   font-weight: 600;
   margin: 10px auto;
 }
@@ -96,11 +98,11 @@ table {
   width: 100%;
   margin: 30px auto;
   font-weight: 100;
-  font-size: $size-1;
+  font-size: 14px;
 }
 
 tr {
-  margin-bottom: 20px;
+  height: 40px;
 }
 
 th {
@@ -111,10 +113,14 @@ th {
 
 td{
   font-weight: 400;
-  &.yes{
-    color: $green;
-  }
-  &.no{
-    color: $orange;
-  }
+}
+
+td.yes{
+  color: #30d7a9;
+  background: transparent;
+}
+
+td.no{
+  color: #ef8338;
+  background: transparent;
 }
