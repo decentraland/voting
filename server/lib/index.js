@@ -5,8 +5,10 @@ const app = require('express')()
 setGlobalMiddleware(app)
 const routes = require('./routes')
 const models = require('./config/models')
+const cors = require('cors')
 
 app.use('/', routes)
+app.use(cors('*'))
 
 app.get('/', (req, res) => {
   res
