@@ -1,88 +1,78 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 
 import VoteSummary from '../components/VoteSummary'
 import VoteList from '../components/VoteList'
 import '../components/styles.css'
 
-export default class VoteContainer extends Component {
+import { connectWeb3, fetchSubject, castVote } from '../actions'
+
+class VoteContainer extends Component {
 
   constructor (props) {
     super(props)
-    this.isDapp = false
-    this.voted = false
+    this.state = {
+      seeVote: false,
+    }
     this.toggleSeeVote = this.toggleSeeVote.bind(this)
+    this.castVote = this.castVote.bind(this)
   }
 
-  componentDidMount () {
-    this.simulate()
-  }
-
-  async simulate () {
-    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
-
-    await sleep(3000)
-    this.isDapp = true
-    this.forceUpdate()
-
-    await sleep(5000)
-    this.voted = true
-    this.forceUpdate()
+  componentWillMount () {
+    this.props.connectWeb3()
+    this.props.fetchSubject(1) //TODO: no harcode it
   }
 
   toggleSeeVote () {
-    this.seeVote = !this.seeVote
-    this.forceUpdate()
+    this.setState({
+      seeVote: !this.state.seeVote
+    })
+  }
+
+  castVote (value) {
+    this.props.castVote({
+      vote: value,
+      address: this.props.user.address,
+      weight: this.props.user.weight,
+    })
   }
 
   render () {
-    const {subject, participantsNumber, participantsPercentage, positive, negative, abstentions,
-      isDapp, voted, user, seeVote} = {
-      subject: 'Should new land be sold at 1000 MANA per unit, on a first-come first-serve basis?',
-      participantsNumber: 4387,
-      participantsPercentage: 45,
-      positive: 1,
-      negative: 1,
-      abstentions: 1,
-      isDapp: this.isDapp,
-      voted: this.voted,
-      seeVote: this.seeVote,
-      user: {
-        address: '2sasd8979sd87g8s7df88csux8aas8x8as8d8as7d8asd',
-        weight: '112342',
-        vote: 'Yes',
-        submission: '0xssklgi02420fasx0019324xfasd',
-      }
-    } //this.props
+    const { subject, participantsNumber, participantsPercentage, positive, negative, abstentions,
+      vote, votes, submission} = this.props.subject
+    const isWeb3Connected = this.props.web3.status
+    const user = this.props.user
 
     return <div className='container'>
-      <h1>Decentraland Community Feedback</h1>
+      <h1>{'Decentraland Community Feedback'}</h1>
       <VoteSummary subject={subject}
                    participantsNumber={participantsNumber}
                    participantsPercentage={participantsPercentage}
                    positive={positive}
                    negative={negative}
                    abstentions={abstentions} />
-      <a onClick={this.toggleSeeVote}>{seeVote ? 'Back' : 'See votes'}</a>
-      { seeVote && <VoteList /> }
-      { (isDapp && !seeVote) &&
+      <a onClick={this.toggleSeeVote}>{this.state.seeVote ? 'Back' : 'See votes'}</a>
+      { this.state.seeVote && <VoteList votes={votes} /> }
+      { (isWeb3Connected && !this.state.seeVote) &&
       <div>
         <p className={'your-vote'}>{'Your Vote:'}</p>
-        { voted &&
-        <div>
-          <p className='small-title'>{'Address:'}</p>
-          <p className='small-value'>{user.address}</p>
-          <p className='small-title'>{'Vote weight:'}</p>
-          <p className='small-value'>{`${user.weight}`}</p>
-          <p className='small-title'>{'Your vote:'}</p>
-          <p className='small-value'>{`${user.vote}`}</p>
-          <p className='small-title'>{'Submission:'}</p>
-          <p className='small-value link'>{`${user.weight} MANA`}</p>
-        </div>
-        }
+        { submission && <div>
+          <div>
+            <p className='small-title'>{'Address:'}</p>
+            <p className='small-value'>{user.address}</p>
+            <p className='small-title'>{'Vote weight:'}</p>
+            <p className='small-value'>{`${user.weight} MANA`}</p>
+            <p className='small-title'>{'Your vote:'}</p>
+            <p className='small-value'>{`${vote}`}</p>
+            <p className='small-title'>{'Submission:'}</p>
+            <p className='small-value link'>{`${submission}`}</p>
+          </div>
+          <p className="small-title">{'Update Vote'}</p>
+        </div> }
         <div className='vote-actions'>
-          <button className={'yes'}>{'Yes'}</button>
-          <button>{'Abstain'}</button>
-          <button className={'no'}>{'No'}</button>
+          <button onClick={() => this.castVote('yes')} className={'yes'}>{'Yes'}</button>
+          <button onClick={() => this.castVote('abstain')}>{'Abstain'}</button>
+          <button onClick={() => this.castVote('no')} className={'no'}>{'No'}</button>
         </div>
         <p className='small-title'>{'Address:'}</p>
         <p className='small-value'>{user.address}</p>
@@ -92,3 +82,19 @@ export default class VoteContainer extends Component {
     </div>
   }
 }
+
+function mapStateToProps ({subject, user, web3}) {
+  return {
+    subject,
+    user,
+    web3,
+  }
+}
+
+const mapDispatchToProps = {
+  connectWeb3,
+  fetchSubject,
+  castVote,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VoteContainer)

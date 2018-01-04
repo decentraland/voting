@@ -51,20 +51,29 @@ a, button {
   font-size: 14px;
   min-width: 150px;
   cursor: pointer;
+  outline: none;
 }
 
 a:hover, button:hover{
-  background: inherit;
+  background: #d7d7d7;
 }
 
-.yes{
+.yes {
    background-color: #30d7a9;
    color: #fff;
+}
+
+.yes:hover, .yes:active {
+  background-color: #30eab6;
 }
 
 .no {
    background-color: #ef8338;
    color: #fff;
+}
+
+.no:hover, .no:active {
+  background-color: #ff974f;
 }
 
 .your-vote{
