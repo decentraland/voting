@@ -76,14 +76,16 @@ module.exports = {
         subject_id: subject.id
       }).catch(e => {
         console.log('error while voting: ', e)
+        return new Promise((resolve, reject) => {
+          reject(new Error(e))
+        })
       })
     }
 
-    // submission ??
-
-    console.log(user, user.id)
     return new Promise(resolve => {
-      resolve({ok: true})
+      resolve({
+        submission: 'x08q94344as8aaad98s9d8as9d8as' // TODO
+      })
     })
   },
   getSubjectPerAddress (subject, address) {

@@ -99,8 +99,6 @@ router.get('/:subject/votes', async (req, res) => {
     res
       .status(200)
       .json({
-        ok: true,
-        statusCode: 200,
         data
       })
   } catch (error) {
