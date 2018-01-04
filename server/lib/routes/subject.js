@@ -33,14 +33,25 @@ router.get('/:subject', (req, res) => {
     console.log(params)
     /**
      * Business Logic, return votes
-     * 
+     *
      */
     res
       .status(200)
       .json({
         ok: true,
         statusCode: 200,
-        votes: null
+        votes: null,
+        subject: {
+          id: 1,
+          subject: 'Should new land be sold at 1000 MANA per unit, on a first-come first-serve basis?',
+          participantsNumber: 4387,
+          participantsPercentage: 45,
+          positive: 1,
+          negative: 1,
+          abstentions: 1,
+          voted: false, //TODO: get voted from server
+          loading: false
+        }
       })
   } catch (error) {
     res.status(500).json({ error: error.toString() })

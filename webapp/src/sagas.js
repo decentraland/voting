@@ -1,7 +1,8 @@
 import { delay } from 'redux-saga'
-import {put, fork, take, takeLatest} from 'redux-saga/effects'
+import { put, fork, take, takeLatest, call } from 'redux-saga/effects'
 
 import types from './types'
+import * as gateway from './gateway'
 
 
 export default function* rootSaga() {
@@ -26,24 +27,13 @@ function* connectWeb3 () {
   }
 }
 
-function* fetchSubject () {
+function* fetchSubject ({ subjectId }) {
   try {
-    yield delay(3000)
+    const subject = yield call(gateway.getSubjectById, subjectId)
+    console.log(subject)
     yield put({
       type: types.fetchSubject.success,
-      payload: {
-        subject: {
-            id: 1,
-            subject: 'Should new land be sold at 1000 MANA per unit, on a first-come first-serve basis?',
-            participantsNumber: 4387,
-            participantsPercentage: 45,
-            positive: 1,
-            negative: 1,
-            abstentions: 1,
-            voted: false, //TODO: get voted from server
-            loading: false,
-        }
-      }
+      payload: {subject}
     })
     yield put({
       type: types.fetchSubjectVotes.request
