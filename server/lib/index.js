@@ -1,14 +1,10 @@
 const { nodeEnv, setGlobalMiddleware } = require('./utils')
 console.log(`Running in ${nodeEnv} mode...`)
 
-// const pg = require('pg')
-// const pgConfig = require('../config/pg')[nodeEnv]
-// const pgPool = new pg.Pool(pgConfig)
-// const pgdb = require('../database/pgdb')(pgPool)
-
 const app = require('express')()
 setGlobalMiddleware(app)
 const routes = require('./routes')
+const models = require('./config/models')
 
 app.use('/', routes)
 
@@ -44,6 +40,6 @@ app.use(function (err, req, res, next) {
     })
 })
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`)
+models.sync().then(() => {
+  app.listen(PORT)
 })
