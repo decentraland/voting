@@ -16,11 +16,8 @@ const Subject = connection.define('subject', {
 })
 
 const User = connection.define('user', {
-  address: {
-    type: Sequelize.TEXT,
-    unique: true
-  },
-  weight: Sequelize.TEXT
+  address: Sequelize.TEXT,
+  weigth: Sequelize.TEXT
 })
 
 const Vote = connection.define('vote', {
@@ -28,11 +25,15 @@ const Vote = connection.define('vote', {
 })
 
 /* Associations */
-Vote.belongsTo(User, {
-  foreignKey: 'address',
-  targetKey: 'address'
-})
+Vote.belongsTo(User)
 
 Vote.belongsTo(Subject)
 
-module.exports = connection
+module.exports = {
+  connection,
+  models: {
+    Subject,
+    User,
+    Vote
+  }
+}

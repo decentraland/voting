@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const pgdb = require('../database/pgdb')()
+const pgdb = require('../database/pgdb')
 
 /**
  * @swagger
@@ -32,6 +32,15 @@ router.get('/:subject', async (req, res) => {
   try {
     const subject = req.params.subject
 
+    // const validate = validations.validateSubject(stack)
+    // if (!validate) {
+    //   res
+    //     .status(404)
+    //     .json({
+    //       statusCode: 404,
+    //       error: 'Some parameters are missing'
+    //     })
+    // }
     const data = await pgdb.getSubject(subject)
       .then(data => data)
 

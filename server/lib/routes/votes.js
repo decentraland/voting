@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const validations = require('./validations')
-const pgdb = require('../database/pgdb')()
+const pgdb = require('../database/pgdb')
 
 /**
  * @swagger
@@ -20,10 +20,19 @@ const pgdb = require('../database/pgdb')()
  *       required: true
  *       schema:
  *        properties:
- *          stack:
+ *          address:
+ *            type: string
+ *            enum: [100]
+ *          submission:
+ *            type: string
+ *            minimum: 1
+ *          vote:
+ *            type: boolean
+ *          weigth:
  *            type: integer
  *            minimum: 1
  *            enum: [100]
+ *     responses:
  *     responses:
  *       200:
  *         id: Integer
@@ -31,26 +40,24 @@ const pgdb = require('../database/pgdb')()
  */
 router.post('/:subject/votes', async (req, res) => {
   try {
-    const stack = req.body
+    const info = req.body
+    const subject = req.params.subject
+
     /* validate all parameters */
 
-    const validate = validations.validateSubject(stack)
-    if (!validate) {
+    const data = await pgdb.postVotesPerSubject(subject, info)
+
+    if (!data) {
+      /* invalid subject or not found */
       res
         .status(404)
         .json({
-          statusCode: 404,
-          error: 'Some parameters are missing'
+          error: 'Subject not found'
         })
     }
-
-    const data = await pgdb.postVotesPerSubject(stack)
-
     res
       .status(200)
       .json({
-        ok: true,
-        statusCode: 200,
         data
       })
   } catch (error) {

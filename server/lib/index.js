@@ -4,7 +4,7 @@ console.log(`Running in ${nodeEnv} mode...`)
 const app = require('express')()
 setGlobalMiddleware(app)
 const routes = require('./routes')
-const models = require('./config/models')
+const models = require('./config/models').connection
 const cors = require('cors')
 
 app.use('/', routes)
