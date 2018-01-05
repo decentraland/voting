@@ -1,7 +1,7 @@
 {
   "development": {
-    "username": "postgres",
-    "password": "123456",
+    "username": "andresmijares",
+    "password": "postgres",
     "database": "voting_schema",
     "host": "127.0.0.1",
     "dialect": "postgres",

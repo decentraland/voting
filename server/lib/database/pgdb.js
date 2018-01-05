@@ -1,37 +1,11 @@
-//const models = require('../config/models').models
 const models = require('../../models')
-const sequelize = models.sequelize
+const utils = require('../utils')
 const User = models.user
 const Subject = models.subject
 const Vote = models.vote
 const Receipt = models.receipt
 
-const findOrCreate = async (model, cond, value, data) => {
-  let instance = await model.find({
-    where: {
-      [cond]: value
-    }
-  })
-
-  if (!instance) {
-    instance = await model.create(data)
-  }
-
-  return instance
-}
-
-const upsert = async (model, condition, values, ) => {
-  return model
-  .findOne({ where: condition })
-  .then((obj) => {
-    if(obj) { // update
-      return obj.update(values);
-    }
-    else { // insert
-      return model.create(values);
-    }
-  })
-}
+const {findOrCreate, upsert} = utils
 
 module.exports = {
   async getSubject (subjectId) {
@@ -102,17 +76,17 @@ module.exports = {
 
     const user = await findOrCreate(User, 'address', data.address, data)
 
-    const receipt = await Receipt.create({
+    await Receipt.create({
       vote: data.vote,
       user_id: user.id,
       subject_id: subject.id
     })
-    .catch(e => {
-      console.log('error while creating receipt: ', e)
-      return new Promise((resolve, reject) => {
-        reject(new Error(e))
+      .catch(e => {
+        console.log('error while creating receipt: ', e)
+        return new Promise((resolve, reject) => {
+          reject(new Error(e))
+        })
       })
-    })
 
     const vote = await upsert(Vote, {
       user_id: user.id,
@@ -123,12 +97,12 @@ module.exports = {
       user_id: user.id,
       subject_id: subject.id
     })
-    .catch(e => {
-      console.log('error while voting: ', e)
-      return new Promise((resolve, reject) => {
-        reject(new Error(e))
+      .catch(e => {
+        console.log('error while voting: ', e)
+        return new Promise((resolve, reject) => {
+          reject(new Error(e))
+        })
       })
-    })
 
     return new Promise(resolve => {
       resolve({
@@ -139,6 +113,22 @@ module.exports = {
   getSubjectPerAddress (subject, address) {
     return new Promise(resolve => {
       resolve({ok: true})
+    })
+  },
+  async getTotalVotes (id) {
+    const data = await Receipt.findAll({
+      attributes: ['vote', 'created_at'],
+      where: {
+        subject_id: id
+      },
+      include: [{
+        model: User,
+        attributes: ['address']
+      }]
+    })
+
+    return new Promise(resolve => {
+      resolve(data)
     })
   }
 }
