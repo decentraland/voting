@@ -124,7 +124,8 @@ module.exports = {
       include: [{
         model: User,
         attributes: ['address']
-      }]
+      }],
+      order: [['created_at', 'DESC']] // TODO: limit and offset
     })
 
     return new Promise(resolve => {

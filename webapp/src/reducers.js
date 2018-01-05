@@ -5,6 +5,8 @@ const INITIAL_STATE = {
     loading: true,
     votes: {
       votes: [],
+      limit: 10,
+      offset: 0,
       loading: true,
     },
     receipt: null,
@@ -20,11 +22,17 @@ const INITIAL_STATE = {
 
 function subject (state = INITIAL_STATE.subject, action) {
   switch (action.type) {
+    case types.fetchSubject.request:
+      return Object.assign({} , state, {
+        votes: INITIAL_STATE.subject.votes
+      })
     case types.fetchSubject.success:
       return Object.assign({} , state, action.payload.subject)
     case types.fetchSubjectVotes.success:
       return Object.assign({} , state, {
         votes: {
+          limit: state.votes.limit,
+          offset: state.votes.offset + state.votes.limit,
           votes: [...state.votes, ...action.payload.votes],
           loading: false,
         }

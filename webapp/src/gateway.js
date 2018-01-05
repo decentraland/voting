@@ -7,7 +7,17 @@ export function getSubjectById(subjectId) {
   .then(response => response.data)
 }
 
+export function getVotesBySubjectId(subjectId, limit, offset) {
+  return axios.get(`${api}${subjectId}/votes?limit=${limit}&offset=${offset}`)
+  .then(response => response.data)
+}
+
 export function castVote(vote) {
   return axios.post(`${api}${vote.subjectId}/votes`, vote)
+  .then(response => response.data)
+}
+
+export function getLatestVote(subjectId, address) {
+  return axios.get(`${api}${subjectId}/votes/${address}`)
   .then(response => response.data)
 }

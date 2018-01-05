@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import VoteSummary from '../components/VoteSummary'
 import VoteList from '../components/VoteList'
@@ -59,7 +60,7 @@ class VoteContainer extends Component {
             <p className='small-title'>{'Your vote:'}</p>
             <p className='small-value'>{`${subject.receipt.vote}`}</p>
             <p className='small-title'>{'Submission:'}</p>
-            <p className='small-value link'>{`${subject.receipt.submission}`}</p>
+            <Link to={`/receipt/${subject.receipt.submission}`} className='small-value link'>{subject.receipt.submission}</Link>
           </div>
           <p className="small-title">{'Update Vote'}</p>
         </div> }

@@ -27,3 +27,10 @@ export function castVote(vote) {
     vote
   }
 }
+
+export function fetchLatestVote(address) {
+  return {
+    type: types.fetchLatestVote.request,
+    address
+  }
+}

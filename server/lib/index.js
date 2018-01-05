@@ -45,4 +45,7 @@ app.use(function (err, req, res, next) {
     })
 })
 
-app.listen(PORT, () => db.sequelize.sync())
+app.listen(PORT, () => {
+  console.log(`Listen to port ${PORT}`)
+  db.sequelize.sync()
+})

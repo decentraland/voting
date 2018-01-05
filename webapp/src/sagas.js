@@ -1,9 +1,10 @@
 import { delay } from 'redux-saga'
-import { put, fork, take, takeLatest, call } from 'redux-saga/effects'
+import { put, fork, take, takeLatest, call, select } from 'redux-saga/effects'
 
 import types from './types'
 import * as actions from './actions'
 import * as gateway from './gateway'
+import * as selectors from './selectors'
 
 
 export default function* rootSaga() {
@@ -36,7 +37,8 @@ function* fetchSubject ({ subjectId }) {
       payload: { subject }
     })
     yield put({
-      type: types.fetchSubjectVotes.request
+      type: types.fetchSubjectVotes.request,
+      subjectId
     })
   } catch(e) {
     yield put({ type: types.fetchSubject.failed, message: e.message })
@@ -46,21 +48,18 @@ function* fetchSubject ({ subjectId }) {
 function* fetchSubjectVotes () {
   try{
     while (true) {
-      const { offset, limit } = yield take(types.fetchSubjectVotes.request)
-      yield delay(3000)
+      const { subjectId } = yield take(types.fetchSubjectVotes.request)
+      const limit = yield select(selectors.getVotesLimit)
+      const offset = yield select(selectors.getVotesOffset)
+
+      const votes = yield call(gateway.getVotesBySubjectId, subjectId, limit, offset)
+
       yield put({
         type: types.fetchSubjectVotes.success,
         payload: {
           offset,
           limit,
-          votes: [
-            { vote: 'no', date: '12 hours ago', address: '0x22312309120390asd12930129312312' },
-            { vote: 'yes', date: '12 hours ago', address: '0x22312309120390asd12930129312312' },
-            { vote: 'no', date: '13 hours ago', address: '0x22312309120390asd12930129312312' },
-            { vote: 'yes', date: '18 hours ago', address: '0x22312309120390asd12930129312312' },
-            { vote: 'yes', date: '20 hours ago', address: '0x22312309120390asd12930129312312' },
-            { vote: 'abstain', date: '20 hours ago', address: '0x22312309120390asd12930129312312' }
-          ]
+          votes: votes
         }
       })
     }
