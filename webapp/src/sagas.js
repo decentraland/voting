@@ -2,6 +2,7 @@ import { delay } from 'redux-saga'
 import { put, fork, take, takeLatest, call } from 'redux-saga/effects'
 
 import types from './types'
+import * as actions from './actions'
 import * as gateway from './gateway'
 
 
@@ -19,7 +20,7 @@ function* connectWeb3 () {
       type: types.connectWeb3.success,
       payload:{
         address: '123xm123123019302190sad0asd0as01e20312031',
-        weight: '10002301',
+        weight: 10002301,
       },
     })
   } catch(e) {
@@ -30,10 +31,9 @@ function* connectWeb3 () {
 function* fetchSubject ({ subjectId }) {
   try {
     const subject = yield call(gateway.getSubjectById, subjectId)
-    console.log(subject)
     yield put({
       type: types.fetchSubject.success,
-      payload: {subject}
+      payload: { subject }
     })
     yield put({
       type: types.fetchSubjectVotes.request
@@ -71,13 +71,15 @@ function* fetchSubjectVotes () {
 
 function* castVote ({ vote }) {
   try {
-    yield delay(1000)
+    const receipt = yield call(gateway.castVote, vote)
+    yield put(actions.fetchSubject(vote.subjectId))
     yield put({
       type: types.castVote.success,
       payload: {
-        subjectId: 1,
-        vote: vote.vote,
-        submission: 'asd1231231239012391zx1349023420303493943'
+        receipt: {
+          ...receipt,
+          vote: vote.vote,
+        },
       },
     })
   } catch (e) {

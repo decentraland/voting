@@ -6,7 +6,8 @@ const INITIAL_STATE = {
     votes: {
       votes: [],
       loading: true,
-    }
+    },
+    receipt: null,
   },
   user: {
     loading: true
@@ -30,8 +31,7 @@ function subject (state = INITIAL_STATE.subject, action) {
       })
     case types.castVote.success:
         return Object.assign({}, state, {
-          vote: action.payload.vote,
-          submission: action.payload.submission,
+          receipt: action.payload.receipt
         })
     default:
       return state

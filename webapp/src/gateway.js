@@ -1,8 +1,13 @@
 import axios from 'axios'
 
-const api = process.env.API_BASE || '//localhost:4000/'
+const api = process.env.API_BASE || '//localhost:3001/'
 
 export function getSubjectById(subjectId) {
   return axios.get(`${api}${subjectId}`)
-  .then(reponse => response.data.subject)
+  .then(response => response.data)
+}
+
+export function castVote(vote) {
+  return axios.post(`${api}${vote.subjectId}/votes`, vote)
+  .then(response => response.data)
 }

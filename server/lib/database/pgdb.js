@@ -76,19 +76,19 @@ module.exports = {
 
     const user = await findOrCreate(User, 'address', data.address, data)
 
-    await Receipt.create({
+    const receipt = await Receipt.create({
       vote: data.vote,
       user_id: user.id,
       subject_id: subject.id
     })
-      .catch(e => {
-        console.log('error while creating receipt: ', e)
-        return new Promise((resolve, reject) => {
-          reject(new Error(e))
-        })
+    .catch(e => {
+      console.log('error while creating receipt: ', e)
+      return new Promise((resolve, reject) => {
+        reject(new Error(e))
       })
+    })
 
-    const vote = await upsert(Vote, {
+    await upsert(Vote, {
       user_id: user.id,
       subject_id: subject.id
     },
@@ -97,16 +97,16 @@ module.exports = {
       user_id: user.id,
       subject_id: subject.id
     })
-      .catch(e => {
-        console.log('error while voting: ', e)
-        return new Promise((resolve, reject) => {
-          reject(new Error(e))
-        })
+    .catch(e => {
+      console.log('error while voting: ', e)
+      return new Promise((resolve, reject) => {
+        reject(new Error(e))
       })
+    })
 
     return new Promise(resolve => {
       resolve({
-        submission: vote.id
+        submission: receipt.id
       })
     })
   },

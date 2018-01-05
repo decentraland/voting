@@ -57,9 +57,7 @@ router.post('/:subject/votes', async (req, res) => {
     }
     res
       .status(200)
-      .json({
-        data
-      })
+      .json(data)
   } catch (error) {
     res.status(500).json({ error: error.toString() })
   }

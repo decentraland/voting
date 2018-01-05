@@ -1,34 +1,31 @@
-import React, {Component} from 'react'
+import React from 'react'
 
-export default class VoteSummary extends Component {
-
-  render () {
-    const {subject, participantsNumber, participantsPercentage, positive, negative, abstentions} = this.props
-
-    return <div>
-      <p className='subject'>{subject}</p>
-      <div className='vote-summary'>
-        <div>
-          <p className='vote-summary-title'>{'# of participants'}</p>
-          <p className='vote-summary-value'>{participantsNumber}</p>
-        </div>
-        <div>
-          <p className='vote-summary-title'>{'participation %'}</p>
-          <p className='vote-summary-value'>{participantsPercentage}</p>
-        </div>
-        <div>
-          <p className='vote-summary-title'>{'positive'}</p>
-          <p className='vote-summary-value'>{positive}</p>
-        </div>
-        <div>
-          <p className='vote-summary-title'>{'negative'}</p>
-          <p className='vote-summary-value'>{negative}</p>
-        </div>
-        <div>
-          <p className='vote-summary-title'>{'abstentions'}</p>
-          <p className='vote-summary-value'>{abstentions}</p>
-        </div>
+function VoteSummary({ subject }) {
+  return (<div>
+    <p className='subject'>{ subject['title'] }</p>
+    <div className='vote-summary'>
+      <div>
+        <p className='vote-summary-title'>{'# of participants'}</p>
+        <p className='vote-summary-value'>{ subject['address_count'] }</p>
+      </div>
+      <div>
+        <p className='vote-summary-title'>{'participation %'}</p>
+        <p className='vote-summary-value'>{ subject['votes_weight'] }</p>
+      </div>
+      <div>
+        <p className='vote-summary-title'>{'positive'}</p>
+        <p className='vote-summary-value'>{ subject['yes_count'] }</p>
+      </div>
+      <div>
+        <p className='vote-summary-title'>{'negative'}</p>
+        <p className='vote-summary-value'>{ subject['no_count'] }</p>
+      </div>
+      <div>
+        <p className='vote-summary-title'>{'abstentions'}</p>
+        <p className='vote-summary-value'>{ subject['abstentions_count'] }</p>
       </div>
     </div>
-  }
+  </div>)
 }
+
+export default VoteSummary

@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
     })
 })
 
-const PORT = process.env.NODE_ENV || 4000
+const PORT = process.env.NODE_ENV || 3001
 
 /*
   used for error handling / stack trace
