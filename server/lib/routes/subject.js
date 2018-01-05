@@ -2,6 +2,21 @@ const express = require('express')
 const router = express.Router()
 const pgdb = require('../database/pgdb')
 
+router.get('/:subject/votes', async (req, res) => {
+  try {
+    const subject = req.params.subject
+
+    const data = await pgdb.getTotalVotes(subject)
+
+    res
+      .status(200)
+      .json(data)
+
+  } catch (error) {
+    res.status(500).json({ error: error.toString() })
+  }
+})
+
 /**
  * @swagger
  * /subject:
@@ -44,12 +59,8 @@ router.get('/:subject', async (req, res) => {
     .then(data => data)
 
     res
-    .status(200)
-    .json({
-      ok: true,
-      statusCode: 200,
-      data
-    })
+      .status(200)
+      .json(data)
   } catch (error) {
     res.status(500).json({ error: error.toString() })
   }
