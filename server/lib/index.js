@@ -4,9 +4,12 @@ console.log(`Running in ${nodeEnv} mode...`)
 const app = require('express')()
 setGlobalMiddleware(app)
 const routes = require('./routes')
-const models = require('./config/models').connection
+// const models = require('./config/models').connection
+const db = require('../models')
 const cors = require('cors')
+const morgan = require('morgan')
 
+app.use(morgan(('tiny'))) //logger
 app.use('/', routes)
 app.use(cors('*'))
 
@@ -42,6 +45,4 @@ app.use(function (err, req, res, next) {
     })
 })
 
-models.sync().then(() => {
-  app.listen(PORT)
-})
+app.listen(PORT, () => db.sequelize.sync())

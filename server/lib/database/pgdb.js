@@ -1,4 +1,5 @@
-const models = require('../config/models').models
+//const models = require('../config/models').models
+const models = require('../../models')
 
 const findOrCreate = async (model, cond, value, data) => {
   let instance = await model.find({
@@ -38,13 +39,13 @@ module.exports = {
     })
   },
   postVotesPerSubject: async (subjectId, data) => {
-    const User = models.User
-    const Subject = models.Subject
-    const Vote = models.Vote
+    const User = models.user
+    const Subject = models.subject
+    const Vote = models.vote
 
     const subject = await Subject.find({
       where: {
-        title: subjectId
+        id: subjectId
       }
     })
 

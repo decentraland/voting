@@ -31,7 +31,6 @@ const pgdb = require('../database/pgdb')
 router.get('/:subject', async (req, res) => {
   try {
     const subject = req.params.subject
-
     // const validate = validations.validateSubject(stack)
     // if (!validate) {
     //   res
