@@ -1,16 +1,17 @@
 const { nodeEnv, setGlobalMiddleware } = require('./utils')
 console.log(`Running in ${nodeEnv} mode...`)
 
-// const pg = require('pg')
-// const pgConfig = require('../config/pg')[nodeEnv]
-// const pgPool = new pg.Pool(pgConfig)
-// const pgdb = require('../database/pgdb')(pgPool)
-
 const app = require('express')()
 setGlobalMiddleware(app)
 const routes = require('./routes')
+// const models = require('./config/models').connection
+const db = require('../models')
+const cors = require('cors')
+const morgan = require('morgan')
 
+app.use(morgan(('tiny'))) //logger
 app.use('/', routes)
+app.use(cors('*'))
 
 app.get('/', (req, res) => {
   res
@@ -44,6 +45,4 @@ app.use(function (err, req, res, next) {
     })
 })
 
-app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}`)
-})
+app.listen(PORT, () => db.sequelize.sync())

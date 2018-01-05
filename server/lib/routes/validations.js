@@ -5,7 +5,7 @@ const schema = Joi.object().keys({
   // description: Joi.string().min(3).max(30).required(),
   // image: Joi.string().min(3).max(30).required(),
   // addressCount: Joi.number().integer().required(),
-  // votesWeigth: Joi.number().integer().required(),
+  // votesWeight: Joi.number().integer().required(),
   // noWeight: Joi.number().integer().required(),
   // yesCount: Joi.number().integer().required(),
   // abstentionsCount: Joi.number().integer().required(),
