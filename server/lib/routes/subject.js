@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const pgdb = require('../database/pgdb')
 
 /**
  * @swagger
@@ -27,32 +28,28 @@ const router = express.Router()
  *         id: Integer
  *         ok: Boolean, operation status
  */
-router.get('/:subject', (req, res) => {
+router.get('/:subject', async (req, res) => {
   try {
-    const params = req.params
-    console.log(params)
-    /**
-     * Business Logic, return votes
-     *
-     */
+    const subjectId = req.params.subject
+    // const validate = validations.validateSubject(stack)
+    // if (!validate) {
+    //   res
+    //     .status(404)
+    //     .json({
+    //       statusCode: 404,
+    //       error: 'Some parameters are missing'
+    //     })
+    // }
+    const data = await pgdb.getSubject(subjectId)
+    .then(data => data)
+
     res
-      .status(200)
-      .json({
-        ok: true,
-        statusCode: 200,
-        votes: null,
-        subject: {
-          id: 1,
-          subject: 'Should new land be sold at 1000 MANA per unit, on a first-come first-serve basis?',
-          participantsNumber: 4387,
-          participantsPercentage: 45,
-          positive: 1,
-          negative: 1,
-          abstentions: 1,
-          voted: false, //TODO: get voted from server
-          loading: false
-        }
-      })
+    .status(200)
+    .json({
+      ok: true,
+      statusCode: 200,
+      data
+    })
   } catch (error) {
     res.status(500).json({ error: error.toString() })
   }
