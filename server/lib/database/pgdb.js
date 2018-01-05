@@ -4,6 +4,7 @@ const sequelize = models.sequelize
 const User = models.user
 const Subject = models.subject
 const Vote = models.vote
+const Receipt = models.receipt
 
 const findOrCreate = async (model, cond, value, data) => {
   let instance = await model.find({
@@ -100,6 +101,18 @@ module.exports = {
     }
 
     const user = await findOrCreate(User, 'address', data.address, data)
+
+    const receipt = await Receipt.create({
+      vote: data.vote,
+      user_id: user.id,
+      subject_id: subject.id
+    })
+    .catch(e => {
+      console.log('error while creating receipt: ', e)
+      return new Promise((resolve, reject) => {
+        reject(new Error(e))
+      })
+    })
 
     const vote = await upsert(Vote, {
       user_id: user.id,
