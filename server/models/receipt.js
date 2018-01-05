@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const Receipt = sequelize.define('receipt', {
-    vote: { type: DataTypes.TEXT, allowNull: false },
+    vote: { type: DataTypes.TEXT, allowNull: false }
   })
 
   Receipt.associate = models => {

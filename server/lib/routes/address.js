@@ -39,13 +39,11 @@ const router = express.Router()
  */
 router.get('/:subject/votes/:address', (req, res) => {
   try {
-    const params = req.params
+    // const params = req.params
 
     res
       .status(200)
       .json({
-        ok: true,
-        statusCode: 200,
         votes: null
       })
   } catch (error) {
