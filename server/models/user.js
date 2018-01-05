@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) =>
   sequelize.define('user', {
-    address: DataTypes.TEXT,
-    weigth: DataTypes.TEXT
+    address: { type: DataTypes.TEXT, allowNull: false },
+    weigth: { type: DataTypes.TEXT, allowNull: false },
   })

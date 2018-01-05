@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) =>
   sequelize.define('subject', {
-    title: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    image: DataTypes.TEXT
+    title: { type: DataTypes.STRING, allowNull: false },
+    description: { type: DataTypes.TEXT, allowNull: false },
+    image: { type: DataTypes.TEXT, allowNull: false },
   })

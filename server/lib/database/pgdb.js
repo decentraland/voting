@@ -1,5 +1,8 @@
 //const models = require('../config/models').models
 const models = require('../../models')
+const User = models.user
+const Subject = models.subject
+const Vote = models.vote
 
 const findOrCreate = async (model, cond, value, data) => {
   let instance = await model.find({
@@ -15,10 +18,41 @@ const findOrCreate = async (model, cond, value, data) => {
   return instance
 }
 
+const upsert = async (model, condition, values, ) => {
+  return model
+  .findOne({ where: condition })
+  .then((obj) => {
+    if(obj) { // update
+      return obj.update(values);
+    }
+    else { // insert
+      return model.create(values);
+    }
+  })
+}
+
 module.exports = {
-  getSubject (id) {
+  async getSubject (subjectId) {
+    const subject = await Subject.find({
+      where: {
+        id: subjectId
+      }
+    })
+
+    if (!subject) {
+      return null
+    }
+
+    let votes = await Vote.findAll({
+      where: {
+        subject_id: subject.id
+      }
+    })
+
+
     return new Promise(resolve => {
       resolve({
+        votes: votes,
         title: 'Title',
         description: 'description',
         image: 'image here',
@@ -38,12 +72,8 @@ module.exports = {
       resolve({ok: true})
     })
   },
-  postVotesPerSubject: async (subjectId, data) => {
-    const User = models.user
-    const Subject = models.subject
-    const Vote = models.vote
-
-    const subject = await Subject.find({
+  async postVotesPerSubject (subjectId, data) {
+    const subject = await Subject.findOne({
       where: {
         id: subjectId
       }
@@ -55,37 +85,25 @@ module.exports = {
 
     const user = await findOrCreate(User, 'address', data.address, data)
 
-    let vote = await Vote.find({
-      where: {
-        user_id: user.id,
-        subject_id: subject.id
-      }
+    const vote = await upsert(Vote, {
+      user_id: user.id,
+      subject_id: subject.id
+    },
+    {
+      vote: data.vote,
+      user_id: user.id,
+      subject_id: subject.id
     })
-
-    if (vote) {
-      vote = await Vote.update({
-        vote: data.vote
-      }, {
-        where: {
-          id: vote.id
-        }
+    .catch(e => {
+      console.log('error while voting: ', e)
+      return new Promise((resolve, reject) => {
+        reject(new Error(e))
       })
-    } else {
-      vote = await Vote.create({
-        vote: data.vote,
-        user_id: user.id,
-        subject_id: subject.id
-      }).catch(e => {
-        console.log('error while voting: ', e)
-        return new Promise((resolve, reject) => {
-          reject(new Error(e))
-        })
-      })
-    }
+    })
 
     return new Promise(resolve => {
       resolve({
-        submission: 'x08q94344as8aaad98s9d8as9d8as' // TODO
+        submission: vote.id
       })
     })
   },

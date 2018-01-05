@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const Vote = sequelize.define('vote', {
-    vote: DataTypes.TEXT
+    vote: { type: DataTypes.TEXT, allowNull: false },
   })
 
   Vote.associate = models => {

@@ -30,7 +30,7 @@ const pgdb = require('../database/pgdb')
  */
 router.get('/:subject', async (req, res) => {
   try {
-    const subject = req.params.subject
+    const subjectId = req.params.subject
     // const validate = validations.validateSubject(stack)
     // if (!validate) {
     //   res
@@ -40,7 +40,7 @@ router.get('/:subject', async (req, res) => {
     //       error: 'Some parameters are missing'
     //     })
     // }
-    const data = await pgdb.getSubject(subject)
+    const data = await pgdb.getSubject(subjectId)
       .then(data => data)
 
     res
