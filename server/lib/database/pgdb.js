@@ -1,5 +1,6 @@
 //const models = require('../config/models').models
 const models = require('../../models')
+const sequelize = models.sequelize
 const User = models.user
 const Subject = models.subject
 const Vote = models.vote
@@ -44,27 +45,42 @@ module.exports = {
     }
 
     let votes = await Vote.findAll({
+      attributes: ['vote'],
+      include: [{
+        model: User,
+        attributes: ['weight']
+      }],
       where: {
         subject_id: subject.id
       }
     })
 
-
     return new Promise(resolve => {
-      resolve({
-        votes: votes,
-        title: 'Title',
-        description: 'description',
-        image: 'image here',
-        address_count: 100,
-        votes_weight: 100,
-        yes_weight: 100, // mana
-        abstentions_weight: 100,
-        no_weight: 100, // mana
-        yes_count: 100,
-        abstentions_count: 100,
-        no_count: 100
-      })
+      resolve(votes.reduce((normalizedSubject, vote) => {
+        normalizedSubject['address_count'] = votes.length
+        normalizedSubject['votes_weight'] += parseInt(vote.user.weight)
+        normalizedSubject['yes_weight'] += vote.vote === 'yes' ? parseInt(vote.user.weight) : 0
+        normalizedSubject['abstentions_weight'] += vote.vote === 'abstain' ? parseInt(vote.user.weight) : 0
+        normalizedSubject['no_weight'] += vote.vote === 'no' ? parseInt(vote.user.weight) : 0
+        normalizedSubject['yes_count'] += vote.vote === 'yes' ? 1 : 0
+        normalizedSubject['no_count'] += vote.vote === 'no' ? 1 : 0
+        normalizedSubject['abstentions_count'] += vote.vote === 'abstain' ? 1 : 0
+        return normalizedSubject
+      }, {
+        id: subject.id,
+        image: subject.image,
+        title: subject.title,
+        description: subject.description,
+        'address_count': 0,
+        'votes_weight': 0,
+        'yes_weight': 0,
+        'abstentions_weight': 0,
+        'no_weight': 0,
+        'yes_count': 0,
+        'abstentions_count': 0,
+        'no_count': 0
+
+      }))
     })
   },
   getVotesPerSubject (data) {

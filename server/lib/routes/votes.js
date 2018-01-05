@@ -28,7 +28,7 @@ const pgdb = require('../database/pgdb')
  *            minimum: 1
  *          vote:
  *            type: boolean
- *          weigth:
+ *          weight:
  *            type: integer
  *            minimum: 1
  *            enum: [100]
