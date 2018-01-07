@@ -1,6 +1,8 @@
 const { nodeEnv, setGlobalMiddleware } = require('./utils')
 console.log(`Running in ${nodeEnv} mode...`)
 
+const fs = require('fs')
+const path = require('path')
 const app = require('express')()
 setGlobalMiddleware(app)
 const routes = require('./routes')
@@ -9,7 +11,9 @@ const db = require('../models')
 const cors = require('cors')
 const morgan = require('morgan')
 
-app.use(morgan(('tiny'))) //logger
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
+
+app.use(morgan('combined', {stream: accessLogStream})) //logger
 app.use('/', routes)
 app.use(cors('*'))
 
