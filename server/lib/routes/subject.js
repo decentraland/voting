@@ -6,11 +6,25 @@ router.get('/:subject/votes', async (req, res) => {
   try {
     const subject = req.params.subject
 
-    const data = await pgdb.getTotalVotes(subject)
+    const data = await pgdb.getVotesPerSubject(subject)
 
     res
       .status(200)
       .json(data)
+
+  } catch (error) {
+    res.status(500).json({ error: error.toString() })
+  }
+})
+
+router.get('/:subject/votes/:address', async (req, res) => {
+  try {
+    const { subject, address } = req.params
+    const data = await pgdb.getLatestVoteByAddress(subject, address)
+
+    res
+    .status(200)
+    .json(data)
 
   } catch (error) {
     res.status(500).json({ error: error.toString() })

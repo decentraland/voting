@@ -60,7 +60,7 @@ class VoteContainer extends Component {
             <p className='small-title'>{'Your vote:'}</p>
             <p className='small-value'>{`${subject.receipt.vote}`}</p>
             <p className='small-title'>{'Submission:'}</p>
-            <Link to={`/receipt/${subject.receipt.submission}`} className='small-value link'>{subject.receipt.submission}</Link>
+            <Link to={`/receipt/${subject.receipt.id}`} className='small-value link'>{subject.receipt.id}</Link>
           </div>
           <p className="small-title">{'Update Vote'}</p>
         </div> }

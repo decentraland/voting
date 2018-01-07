@@ -37,10 +37,10 @@ function subject (state = INITIAL_STATE.subject, action) {
           loading: false,
         }
       })
+    case types.fetchLatestVote.success:
+      return { ...state, receipt: action.payload.receipt }
     case types.castVote.success:
-        return Object.assign({}, state, {
-          receipt: action.payload.receipt
-        })
+        return { ...state, receipt: action.payload.receipt }
     default:
       return state
   }

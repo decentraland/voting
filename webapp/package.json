@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "REACT_APP_WEB3_HTTP_PROVIDER='https://ropsten.etherscan.io/' REACT_APP_MANA_CONTRACT_ADDRESS='0xe5969D6592879B8ed89e77852595d434C44220ae' react-scripts start",
-    "build": "REACT_APP_WEB3_HTTP_PROVIDER='' REACT_APP_MANA_CONTRACT_ADDRESS='0x0f5d2fb29fb7d3cfee444a200298f468908cc942' react-scripts build",
+    "setenv:dev": "REACT_APP_WEB3_HTTP_PROVIDER='https://ropsten.etherscan.io/' REACT_APP_MANA_CONTRACT_ADDRESS='0xe5969D6592879B8ed89e77852595d434C44220ae'",
+    "setenv:prod": "REACT_APP_WEB3_HTTP_PROVIDER='https://ropsten.etherscan.io/' REACT_APP_MANA_CONTRACT_ADDRESS='0x0f5d2fb29fb7d3cfee444a200298f468908cc942'",
+    "start": "npm run setenv:dev react-scripts start",
+    "build": "npm run setenv:prod react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },

@@ -8,9 +8,9 @@ import * as selectors from './selectors'
 import { isChrome, generateMessage } from './lib/utils'
 import MANAToken from './contracts/MANAToken'
 
-
 export default function* rootSaga() {
   yield takeLatest(types.connectWeb3.request, connectWeb3)
+  yield takeLatest(types.connectWeb3.success, fetchLatestVote)
   yield takeLatest(types.fetchSubject.request, fetchSubject)
   yield takeLatest(types.castVote.request, castVote)
   yield fork(fetchSubjectVotes)
@@ -127,6 +127,19 @@ function* connectWeb3 () {
   }
 }
 
+function* fetchLatestVote () {
+  try {
+    const address = yield select(selectors.getAddress)
+    const subjectId = yield select(selectors.getCurrentSubjectId)
+
+    const receipt = yield call(gateway.getLatestVote, subjectId, address)
+
+    yield put({ type: types.fetchLatestVote.success, payload: { receipt } })
+  } catch(e) {
+    yield put({ type: types.fetchLatestVote.failed, message: e.message })
+  }
+}
+
 function* fetchSubject ({ subjectId }) {
   try {
     const subject = yield call(gateway.getSubjectById, subjectId)
@@ -168,7 +181,7 @@ function* fetchSubjectVotes () {
 
 function* castVote ({ vote }) {
   try {
-    const address = yield select(selectors.getAdress)
+    const address = yield select(selectors.getAddress)
     const ledger = yield select(selectors.getLedger)
     const message = window.web3Eth.utils.toHex(generateMessage(0, address, vote.vote))
     const signature = yield call(() => sign(message, address, window.web3Eth, ledger))
@@ -176,12 +189,7 @@ function* castVote ({ vote }) {
     yield put(actions.fetchSubject(vote.subjectId))
     yield put({
       type: types.castVote.success,
-      payload: {
-        receipt: {
-          ...receipt,
-          vote: vote.vote,
-        },
-      },
+      payload: { receipt },
     })
   } catch (e) {
     yield put({type: types.castVote.failed, message: e.message})

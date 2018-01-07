@@ -37,7 +37,7 @@ const router = express.Router()
  *         id: Integer
  *         ok: Boolean, operation status
  */
-router.get('/:subject/votes/:address', (req, res) => {
+router.get('/:subject/votddddes/:address', (req, res) => {
   try {
     // const params = req.params
 

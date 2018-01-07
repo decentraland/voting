@@ -58,11 +58,6 @@ module.exports = {
       }))
     })
   },
-  getVotesPerSubject (data) {
-    return new Promise(resolve => {
-      resolve({ok: true})
-    })
-  },
   async postVotesPerSubject (subjectId, data) {
     const { message, signature } = data
     const { address } = verifyMessage(message, signature) //TODO: handle error here
@@ -110,27 +105,49 @@ module.exports = {
     })
 
     return new Promise(resolve => {
-      resolve({
-        submission: receipt.id
-      })
+      resolve(receipt)
     })
   },
-  getSubjectPerAddress (subject, address) {
+  async getSubjectPerAddress (subject, address) {
     return new Promise(resolve => {
       resolve({ok: true})
     })
-  },
-  async getTotalVotes (id) {
+  }, //TODO: do or remove
+  async getVotesPerSubject (subjectId) {
     const data = await Receipt.findAll({
       attributes: ['vote', 'created_at'],
       where: {
-        subject_id: id
+        subject_id: subjectId
       },
       include: [{
         model: User,
         attributes: ['address']
       }],
       order: [['created_at', 'DESC']] // TODO: limit and offset
+    })
+
+    return new Promise(resolve => {
+      resolve(data)
+    })
+  },
+  async getLatestVoteByAddress (subjectId, address) {
+    const user = await User.findOne({
+      where: {
+        address: address
+      }
+    })
+
+    if (!user) {
+      return null
+    }
+
+    const data = await Receipt.findOne({
+      attributes: ['id', 'vote'],
+      where: {
+        subject_id: subjectId,
+        user_id: user.id,
+      },
+      order: [['created_at', 'DESC']]
     })
 
     return new Promise(resolve => {
