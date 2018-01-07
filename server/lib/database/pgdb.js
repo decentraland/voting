@@ -60,7 +60,12 @@ module.exports = {
   },
   async postVotesPerSubject (subjectId, data) {
     const { message, signature } = data
-    const { address } = verifyMessage(message, signature) //TODO: handle error here
+    const { address } = verifyMessage(message, signature) // TODO: handle error here
+    // go to mana with this address ^ and check the balance
+    // to get the wei
+    // check if the wei is the same, if not, update it...
+    // what the fuck is wei???
+    // checkWei <--- create
 
     const subject = await Subject.findOne({
       where: {
@@ -74,6 +79,12 @@ module.exports = {
 
     const user = await findOrCreate(User, 'address', address, data)
 
+    // TODO: server_message and server_signature
+    // server_signature: Encript with my `private key ??` the server_message
+    // server_message:
+    // export const MESSAGE = `This is the vote number {sequence} for the user with address: {address}.
+    // The vote to cast is: {vote}. Date: {date}`
+
     const receipt = await Receipt.create({
       vote: data.vote,
       user_message: message,
@@ -81,12 +92,12 @@ module.exports = {
       user_id: user.id,
       subject_id: subject.id
     })
-    .catch(e => {
-      console.log('error while creating receipt: ', e)
-      return new Promise((resolve, reject) => {
-        reject(new Error(e))
+      .catch(e => {
+        console.log('error while creating receipt: ', e)
+        return new Promise((resolve, reject) => {
+          reject(new Error(e))
+        })
       })
-    })
 
     await upsert(Vote, {
       user_id: user.id,
@@ -97,12 +108,12 @@ module.exports = {
       user_id: user.id,
       subject_id: subject.id
     })
-    .catch(e => {
-      console.log('error while voting: ', e)
-      return new Promise((resolve, reject) => {
-        reject(new Error(e))
+      .catch(e => {
+        console.log('error while voting: ', e)
+        return new Promise((resolve, reject) => {
+          reject(new Error(e))
+        })
       })
-    })
 
     return new Promise(resolve => {
       resolve(receipt)
@@ -112,7 +123,7 @@ module.exports = {
     return new Promise(resolve => {
       resolve({ok: true})
     })
-  }, //TODO: do or remove
+  }, // TODO: do or remove
   async getVotesPerSubject (subjectId) {
     const data = await Receipt.findAll({
       attributes: ['vote', 'created_at'],
@@ -145,7 +156,7 @@ module.exports = {
       attributes: ['id', 'vote'],
       where: {
         subject_id: subjectId,
-        user_id: user.id,
+        user_id: user.id
       },
       order: [['created_at', 'DESC']]
     })

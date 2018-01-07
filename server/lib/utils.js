@@ -1,7 +1,6 @@
 const bodyParser = require('body-parser')
 const eth = require('decentraland-commons').eth
 
-
 module.exports = {
   nodeEnv: process.env.NODE_ENV || 'development',
   setGlobalMiddleware: (app) => {
