@@ -9,7 +9,7 @@ const db = require('../models')
 const cors = require('cors')
 const morgan = require('morgan')
 
-app.use(morgan(('tiny'))) //logger
+app.use(morgan(('tiny'))) // logger
 app.use('/', routes)
 app.use(cors('*'))
 
@@ -51,21 +51,26 @@ app.listen(PORT, () => {
   db.sequelize.sync()
 })
 
-/* Blockchain Watcher
+/* Blockchain Watcher */
 function startWatcher () {
   const callBack = (data) => {
     console.log('{{{{{{{DATA}}}}}}', data)
   }
   const web3 = new Web3('https://ropsten.etherscan.io/')
-  var subscription = web3.eth.subscribe('newBlockHeaders', function(error, result){
-    if (!error)
-      console.log(error);
-  })
-  .on("data", function(blockHeader){
-    console.log(data)
-  })
-  web3.eth.subscribe('pendingTransactions', callBack).on("data", function(blockHeader){
-    console.log(data)
-  })
+  var subscription = web3
+    .eth
+    .subscribe('newBlockHeaders', function (error, result) {
+      if (!error) {
+        console.log(error)
+      }
+    })
+    .on('data', function (blockHeader) {
+      console.log(data)
+    })
+  web3
+    .eth
+    .subscribe('pendingTransactions', callBack)
+    .on('data', function (blockHeader) {
+      console.log(data)
+    })
 }
-*/
