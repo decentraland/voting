@@ -65,6 +65,11 @@ function web3 (state = INITIAL_STATE.user, action) {
         status: true,
         loading: false,
       }
+    case types.connectWeb3.failed:
+      return {
+        status: false,
+        loading: false,
+      }
     default:
       return state
   }

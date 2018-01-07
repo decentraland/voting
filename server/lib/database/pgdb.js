@@ -5,7 +5,7 @@ const Subject = models.subject
 const Vote = models.vote
 const Receipt = models.receipt
 
-const {findOrCreate, upsert} = utils
+const { findOrCreate, upsert, verifyMessage } = utils
 
 module.exports = {
   async getSubject (subjectId) {
@@ -64,6 +64,9 @@ module.exports = {
     })
   },
   async postVotesPerSubject (subjectId, data) {
+    const { message, signature } = data
+    const { address } = verifyMessage(message, signature) //TODO: handle error here
+
     const subject = await Subject.findOne({
       where: {
         id: subjectId
@@ -74,10 +77,12 @@ module.exports = {
       return null
     }
 
-    const user = await findOrCreate(User, 'address', data.address, data)
+    const user = await findOrCreate(User, 'address', address, data)
 
     const receipt = await Receipt.create({
       vote: data.vote,
+      user_message: message,
+      user_signature: signature,
       user_id: user.id,
       subject_id: subject.id
     })
