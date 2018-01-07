@@ -5,7 +5,7 @@
 ### Database
 
 
-- Create a database call `vote_schema` with postgres
+- Create a database call `voting_schema` with postgres
 - Go to config/config.json, edit `development` object with your username and password
 - Install `sequelize-cli` running `npm install sequelize-cli -g`
 - Once the server is up and running run: `sequelize db:seed:all` to create test data

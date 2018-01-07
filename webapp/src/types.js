@@ -10,7 +10,7 @@ export default {
   ...normalizeTypes('fetchSubject'),
   ...normalizeTypes('castVote'),
   ...normalizeTypes('fetchSubjectVotes'),
+  ...normalizeTypes('fetchLatestVote'),
 }
-
 
 

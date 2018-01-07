@@ -8,7 +8,7 @@
 h1{
   font-size: 24px;
   font-weight: 100;
-  color: #6b618e
+  color: #3e396b;
 }
 
 .subject{
@@ -16,7 +16,7 @@ h1{
   font-size: 28px;
   line-height: 1.3;
   margin: 40px 0;
-  color: #6b618e
+  color: #3e396b;
 }
 
 .vote-summary {
@@ -94,6 +94,9 @@ a:hover, button:hover{
 
 .small-value.link{
   color: deepskyblue;
+  background: transparent;
+  padding: 0;
+  margin-top: 0;
 }
 
 .small-title{
@@ -118,10 +121,15 @@ th {
   text-transform: uppercase;
   color: #a0a0a0;
   font-weight: 100;
+  text-align: center;
 }
 
 td{
   font-weight: 400;
+}
+
+td.vote {
+  text-transform: capitalize;
 }
 
 td.yes{

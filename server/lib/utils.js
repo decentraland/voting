@@ -1,13 +1,14 @@
 const bodyParser = require('body-parser')
+const eth = require('decentraland-commons').eth
 
 module.exports = {
   nodeEnv: process.env.NODE_ENV || 'development',
   setGlobalMiddleware: (app) => {
-    /* app.use(function (req, res, next) {
+    app.use(function (req, res, next) {
       res.header('Access-Control-Allow-Origin', '*')
       res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
       next()
-    }) */
+    })
     app.use(bodyParser.urlencoded({extended: true}))
     app.use(bodyParser.json())
   },
@@ -32,5 +33,25 @@ module.exports = {
           return model.create(values);
         }
       })
+  },
+  verifyMessage: (message, signature) => {
+    const ethUtils = eth.utils.ethereumJsUtils
+
+    const decodedMessage = new Buffer(message.substr(2), 'hex')
+    const decodedSignature = ethUtils.fromRpcSig(
+      new Buffer(signature.substr(2), 'hex')
+    )
+
+    const pubkey = ethUtils.ecrecover(
+      ethUtils.hashPersonalMessage(decodedMessage),
+      decodedSignature.v,
+      decodedSignature.r,
+      decodedSignature.s
+    )
+
+    const address = '0x' + ethUtils.pubToAddress(pubkey).toString('hex')
+
+    return { address, message: decodedMessage }
   }
 }
+

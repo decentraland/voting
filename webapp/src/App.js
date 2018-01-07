@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
+import { Route } from 'react-router-dom'
+
 
 import VoteContainer from './containers/VoteContainer'
+import ReceiptContainer from './containers/ReceiptContainer'
 import './App.css'
 
 class App extends Component {
@@ -9,7 +12,10 @@ class App extends Component {
       <div className="App">
         <header>
         </header>
-        <VoteContainer />
+        <main>
+          <Route path="/" exact component={VoteContainer} />
+          <Route path="/receipt/:receiptId" component={ReceiptContainer} />
+        </main>
         <footer>
         </footer>
       </div>

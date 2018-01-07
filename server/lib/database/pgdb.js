@@ -5,7 +5,7 @@ const Subject = models.subject
 const Vote = models.vote
 const Receipt = models.receipt
 
-const {findOrCreate, upsert} = utils
+const { findOrCreate, upsert, verifyMessage } = utils
 
 module.exports = {
   async getSubject (subjectId) {
@@ -58,12 +58,15 @@ module.exports = {
       }))
     })
   },
-  getVotesPerSubject (data) {
-    return new Promise(resolve => {
-      resolve({ok: true})
-    })
-  },
   async postVotesPerSubject (subjectId, data) {
+    const { message, signature } = data
+    const { address } = verifyMessage(message, signature) // TODO: handle error here
+    // go to mana with this address ^ and check the balance
+    // to get the wei
+    // check if the wei is the same, if not, update it...
+    // what the fuck is wei???
+    // checkWei <--- create
+
     const subject = await Subject.findOne({
       where: {
         id: subjectId
@@ -74,10 +77,18 @@ module.exports = {
       return null
     }
 
-    const user = await findOrCreate(User, 'address', data.address, data)
+    const user = await findOrCreate(User, 'address', address, data)
 
-    await Receipt.create({
+    // TODO: server_message and server_signature
+    // server_signature: Encript with my `private key ??` the server_message
+    // server_message:
+    // export const MESSAGE = `This is the vote number {sequence} for the user with address: {address}.
+    // The vote to cast is: {vote}. Date: {date}`
+
+    const receipt = await Receipt.create({
       vote: data.vote,
+      user_message: message,
+      user_signature: signature,
       user_id: user.id,
       subject_id: subject.id
     })
@@ -88,7 +99,7 @@ module.exports = {
         })
       })
 
-    const vote = await upsert(Vote, {
+    await upsert(Vote, {
       user_id: user.id,
       subject_id: subject.id
     },
@@ -105,26 +116,49 @@ module.exports = {
       })
 
     return new Promise(resolve => {
-      resolve({
-        submission: vote.id
-      })
+      resolve(receipt)
     })
   },
-  getSubjectPerAddress (subject, address) {
+  async getSubjectPerAddress (subject, address) {
     return new Promise(resolve => {
       resolve({ok: true})
     })
-  },
-  async getTotalVotes (id) {
+  }, // TODO: do or remove
+  async getVotesPerSubject (subjectId) {
     const data = await Receipt.findAll({
       attributes: ['vote', 'created_at'],
       where: {
-        subject_id: id
+        subject_id: subjectId
       },
       include: [{
         model: User,
         attributes: ['address']
-      }]
+      }],
+      order: [['created_at', 'DESC']] // TODO: limit and offset
+    })
+
+    return new Promise(resolve => {
+      resolve(data)
+    })
+  },
+  async getLatestVoteByAddress (subjectId, address) {
+    const user = await User.findOne({
+      where: {
+        address: address
+      }
+    })
+
+    if (!user) {
+      return null
+    }
+
+    const data = await Receipt.findOne({
+      attributes: ['id', 'vote'],
+      where: {
+        subject_id: subjectId,
+        user_id: user.id
+      },
+      order: [['created_at', 'DESC']]
     })
 
     return new Promise(resolve => {

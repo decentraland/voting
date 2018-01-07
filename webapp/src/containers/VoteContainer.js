@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import VoteSummary from '../components/VoteSummary'
 import VoteList from '../components/VoteList'
@@ -31,6 +32,7 @@ class VoteContainer extends Component {
 
   castVote (value) {
     this.props.castVote({
+      subjectId: this.props.subject.id,
       vote: value,
       address: this.props.user.address,
       weight: this.props.user.weight,
@@ -38,34 +40,27 @@ class VoteContainer extends Component {
   }
 
   render () {
-    const { subject, participantsNumber, participantsPercentage, positive, negative, abstentions,
-      vote, votes, submission} = this.props.subject
+    const { subject, user } = this.props
     const isWeb3Connected = this.props.web3.status
-    const user = this.props.user
 
     return <div className='container'>
       <h1>{'Decentraland Community Feedback'}</h1>
-      <VoteSummary subject={subject}
-                   participantsNumber={participantsNumber}
-                   participantsPercentage={participantsPercentage}
-                   positive={positive}
-                   negative={negative}
-                   abstentions={abstentions} />
+      <VoteSummary subject={subject}/>
       <a onClick={this.toggleSeeVote}>{this.state.seeVote ? 'Back' : 'See votes'}</a>
-      { this.state.seeVote && <VoteList votes={votes} /> }
+      { this.state.seeVote && <VoteList votes={subject.votes} /> }
       { (isWeb3Connected && !this.state.seeVote) &&
       <div>
         <p className={'your-vote'}>{'Your Vote:'}</p>
-        { submission && <div>
+        { subject.receipt && <div>
           <div>
             <p className='small-title'>{'Address:'}</p>
             <p className='small-value'>{user.address}</p>
             <p className='small-title'>{'Vote weight:'}</p>
             <p className='small-value'>{`${user.weight} MANA`}</p>
             <p className='small-title'>{'Your vote:'}</p>
-            <p className='small-value'>{`${vote}`}</p>
+            <p className='small-value'>{`${subject.receipt.vote}`}</p>
             <p className='small-title'>{'Submission:'}</p>
-            <p className='small-value link'>{`${submission}`}</p>
+            <Link to={`/receipt/${subject.receipt.id}`} className='small-value link'>{subject.receipt.id}</Link>
           </div>
           <p className="small-title">{'Update Vote'}</p>
         </div> }
