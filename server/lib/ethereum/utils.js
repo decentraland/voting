@@ -23,12 +23,9 @@ module.exports = {
           const balance = web3Eth.web3.eth.getBalance(address)
           pgdb.updateUserWeightByAddress(address, balance.toNumber() / 10^18)
         })
-
-
       } catch (e) {
         console.log('Error at blockchain Watcher: ',e)
       }
     })
   } // 525721582,
-
 }

@@ -5,7 +5,9 @@ const Subject = models.subject
 const Vote = models.vote
 const Receipt = models.receipt
 
+const {getMessage, getServerKey} = require('./constanst')
 const { findOrCreate, upsert, verifyMessage } = utils
+const web3Eth = require('decentraland-commons').eth.utils
 
 module.exports = {
   async getSubject (subjectId) {
@@ -59,13 +61,8 @@ module.exports = {
     })
   },
   async postVotesPerSubject (subjectId, data) {
-    const { message, signature } = data
+    const { message, signature, vote } = data
     const { address } = verifyMessage(message, signature) // TODO: handle error here
-    // go to mana with this address ^ and check the balance
-    // to get the wei
-    // check if the wei is the same, if not, update it...
-    // what the fuck is wei???
-    // checkWei <--- create
 
     const subject = await Subject.findOne({
       where: {
@@ -78,18 +75,19 @@ module.exports = {
     }
 
     const user = await findOrCreate(User, 'address', address, data)
-
-    // TODO: server_message and server_signature
-    // server_signature: Encript with my `private key ??` the server_message
-    // server_message:
-    // export const MESSAGE = `This is the vote number {sequence} for the user with address: {address}.
-    // The vote to cast is: {vote}. Date: {date}`
+    const serverMessage = web3Eth.toHex(getMessage(address, vote))
+    const serverSignature = web3Eth.localSign(
+      serverMessage,
+      getServerKey()
+    )
 
     const receipt = await Receipt.create({
       vote: data.vote,
       user_message: message,
       user_signature: signature,
       user_id: user.id,
+      server_signature: serverSignature,
+      server_message: serverMessage,
       subject_id: subject.id
     })
       .catch(e => {
