@@ -3,7 +3,7 @@ const utils = require('decentraland-commons').utils
 
 const MANAToken = require('../contracts/MANAToken')
 const pgdb = require('../database/pgdb')
-
+const { getMessage, getServerKey } = require('./constanst')
 
 class EthUtils {
   async init () {
@@ -71,6 +71,15 @@ class EthUtils {
     const address = '0x' + ethUtils.pubToAddress(pubkey).toString('hex')
 
     return { address, message: decodedMessage }
+  }
+
+  sign(address, vote) {
+    const serverMessage = web3Eth.utils.toHex(getMessage(address, vote))
+    const serverSignature = web3Eth.utils.localSign(
+      serverMessage,
+      getServerKey()
+    )
+    return { serverMessage, serverSignature }
   }
 }
 
