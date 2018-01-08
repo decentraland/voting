@@ -33,9 +33,7 @@ class VoteContainer extends Component {
   castVote (value) {
     this.props.castVote({
       subjectId: this.props.subject.id,
-      vote: value,
-      address: this.props.user.address,
-      weight: this.props.user.weight,
+      vote: value
     })
   }
 

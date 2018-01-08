@@ -1,11 +1,12 @@
 const models = require('../../models')
 const utils = require('../utils')
+const ethUtils = require('../ethereum/utils')
 const User = models.user
 const Subject = models.subject
 const Vote = models.vote
 const Receipt = models.receipt
 
-const { findOrCreate, upsert, verifyMessage } = utils
+const { findOrCreate, upsert } = utils
 
 module.exports = {
   async getSubject (subjectId) {
@@ -60,11 +61,12 @@ module.exports = {
   },
   async postVotesPerSubject (subjectId, data) {
     const { message, signature } = data
-    const { address } = verifyMessage(message, signature) // TODO: handle error here
-    // go to mana with this address ^ and check the balance
-    // to get the wei
+    const { address } = ethUtils.verifyMessage(message, signature) // TODO: handle error here
+    const weight = await ethUtils.getBalance(address)
+    // go to mana with this address ^ and check the balance -> Done
+    // to get the wei -> Done
     // check if the wei is the same, if not, update it...
-    // what the fuck is wei???
+    // what the fuck is wei??? Wei Dai creator of Crypto++. A subunit of the Ether value token 1e18 wei = 1 ether
     // checkWei <--- create
 
     const subject = await Subject.findOne({
@@ -77,7 +79,7 @@ module.exports = {
       return null
     }
 
-    const user = await findOrCreate(User, 'address', address, data)
+    const user = await findOrCreate(User, 'address', address, { address, weight })
 
     // TODO: server_message and server_signature
     // server_signature: Encript with my `private key ??` the server_message
@@ -108,12 +110,12 @@ module.exports = {
       user_id: user.id,
       subject_id: subject.id
     })
-      .catch(e => {
-        console.log('error while voting: ', e)
-        return new Promise((resolve, reject) => {
-          reject(new Error(e))
-        })
+    .catch(e => {
+      console.log('error while voting: ', e)
+      return new Promise((resolve, reject) => {
+        reject(new Error(e))
       })
+    })
 
     return new Promise(resolve => {
       resolve(receipt)
@@ -163,6 +165,21 @@ module.exports = {
 
     return new Promise(resolve => {
       resolve(data)
+    })
+  },
+  async updateUserWeightByAddress (address, weight) {
+    const user = await User.findOne({
+      where: {
+        address: address
+      }
+    }).then((user) => {
+      if (user) { // update
+        return user.update({ weight: weight })
+      }
+      return user
+    })
+    return new Promise(resolve => {
+      resolve(user)
     })
   }
 }

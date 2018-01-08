@@ -10,6 +10,8 @@ const routes = require('./routes')
 const db = require('../models')
 const cors = require('cors')
 const morgan = require('morgan')
+const env = require('decentraland-commons').env
+const ethUtils = require('./ethereum/utils')
 
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
 app.use(morgan('combined', {stream: accessLogStream})) // logger
@@ -49,32 +51,12 @@ app.use(function (err, req, res, next) {
     })
 })
 
+env.load()
+
 app.listen(PORT, () => {
   console.log(`Listen to port ${PORT}`)
-  // startWatcher()
+  // ethUtils.watchBlocks()
   db.sequelize.sync()
 })
 
-/* Blockchain Watcher */
-function startWatcher () {
-  const callBack = (data) => {
-    console.log('{{{{{{{DATA}}}}}}', data)
-  }
-  const web3 = new Web3('https://ropsten.etherscan.io/')
-  var subscription = web3
-    .eth
-    .subscribe('newBlockHeaders', function (error, result) {
-      if (!error) {
-        console.log(error)
-      }
-    })
-    .on('data', function (blockHeader) {
-      console.log(data)
-    })
-  web3
-    .eth
-    .subscribe('pendingTransactions', callBack)
-    .on('data', function (blockHeader) {
-      console.log(data)
-    })
-}
+

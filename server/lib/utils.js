@@ -1,5 +1,4 @@
 const bodyParser = require('body-parser')
-const eth = require('decentraland-commons').eth
 
 module.exports = {
   nodeEnv: process.env.NODE_ENV || 'development',
@@ -28,30 +27,11 @@ module.exports = {
       .findOne({ where: condition })
       .then((obj) => {
         if (obj) { // update
-          return obj.update(values);
+          return obj.update(values)
         } else { // insert
-          return model.create(values);
+          return model.create(values)
         }
       })
   },
-  verifyMessage: (message, signature) => {
-    const ethUtils = eth.utils.ethereumJsUtils
-
-    const decodedMessage = new Buffer(message.substr(2), 'hex')
-    const decodedSignature = ethUtils.fromRpcSig(
-      new Buffer(signature.substr(2), 'hex')
-    )
-
-    const pubkey = ethUtils.ecrecover(
-      ethUtils.hashPersonalMessage(decodedMessage),
-      decodedSignature.v,
-      decodedSignature.r,
-      decodedSignature.s
-    )
-
-    const address = '0x' + ethUtils.pubToAddress(pubkey).toString('hex')
-
-    return { address, message: decodedMessage }
-  }
 }
 
