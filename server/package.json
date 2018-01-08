@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "setenv:dev": "REACT_APP_MANA_CONTRACT_ADDRESS='0xe5969D6592879B8ed89e77852595d434C44220ae'",
+    "setenv:prod": "REACT_APP_MANA_CONTRACT_ADDRESS='0x0f5d2fb29fb7d3cfee444a200298f468908cc942'",
     "start": "nodemon --exec babel-node lib/index.js",
     "lint": "eslint",
     "test": "echo \"Error: no test specified\" && exit 1"

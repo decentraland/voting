@@ -1,4 +1,0 @@
-::1 - - [07/Jan/2018:20:55:12 +0000] "OPTIONS /1/votes HTTP/1.1" 200 8 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
-::1 - - [07/Jan/2018:20:55:12 +0000] "POST /1/votes HTTP/1.1" 200 643 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
-::1 - - [07/Jan/2018:20:55:12 +0000] "GET /1 HTTP/1.1" 304 - "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
-::1 - - [07/Jan/2018:20:55:12 +0000] "GET /1/votes?limit=10&offset=0 HTTP/1.1" 200 356 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
