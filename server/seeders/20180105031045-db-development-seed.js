@@ -9,7 +9,8 @@ module.exports = {
         description: 'lorem ipsum',
         created_at: new Date(),
         updated_at: new Date(),
-        id: uuidV4()
+        id: uuidV4(),
+        visible: 1
       }], {})
   },
 
