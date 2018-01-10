@@ -1,5 +1,5 @@
 import { put, fork, take, takeLatest, call, select, all } from 'redux-saga/effects'
-import { eth as web3Eth, utils, env } from 'decentraland-commons'
+import { eth as web3Eth, utils } from 'decentraland-commons'
 
 import types from './types'
 import * as actions from './actions'
@@ -73,23 +73,21 @@ async function connectBrowser() {
 
     let connected = await web3Eth.reconnect(
       null,
-      [MANAToken],
-      { httpProviderUrl: env.universalGet('WEB3_HTTP_PROVIDER') }
+      [MANAToken]
     )
 
     while (!connected && retries <= 3) {
       await utils.sleep(1500)
       connected = await web3Eth.connect(
         null,
-        [MANAToken],
-        { httpProviderUrl: env.universalGet('WEB3_HTTP_PROVIDER') }
+        [MANAToken]
       )
       retries += 1
     }
 
     if (!connected) return false
     const address = await web3Eth.getAddress()
-    const weight = web3Eth.utils.fromWei(await web3Eth.contracts['MANAToken'].getBalanceWei(address).then(response => response))
+    const weight = await web3Eth.contracts['MANAToken'].getBalanceWei(address).then(response => response)
 
     return {
       ethereum: web3Eth,

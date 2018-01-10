@@ -1,13 +1,12 @@
 const models = require('../../models')
 const utils = require('../utils')
+const ethUtils = require('../ethereum/utils')
 const User = models.user
 const Subject = models.subject
 const Vote = models.vote
 const Receipt = models.receipt
 
-const {getMessage, getServerKey} = require('./constanst')
-const { findOrCreate, upsert, verifyMessage } = utils
-const web3Eth = require('decentraland-commons').eth.utils
+const { findOrCreate, upsert } = utils
 
 module.exports = {
   async getSubject (subjectId) {
@@ -62,7 +61,8 @@ module.exports = {
   },
   async postVotesPerSubject (subjectId, data) {
     const { message, signature, vote } = data
-    const { address } = verifyMessage(message, signature) // TODO: handle error here
+    const { address } = ethUtils.verifyMessage(message, signature) // TODO: handle error here
+    const weight = await ethUtils.getBalance(address)
 
     const subject = await Subject.findOne({
       where: {
@@ -74,12 +74,9 @@ module.exports = {
       return null
     }
 
-    const user = await findOrCreate(User, 'address', address, data)
-    const serverMessage = web3Eth.toHex(getMessage(address, vote))
-    const serverSignature = web3Eth.localSign(
-      serverMessage,
-      getServerKey()
-    )
+    const user = await findOrCreate(User, 'address', address, { address, weight })
+
+    const { serverMessage, serverSignature } = ethUtils.sign()
 
     const receipt = await Receipt.create({
       vote: data.vote,
@@ -106,12 +103,12 @@ module.exports = {
       user_id: user.id,
       subject_id: subject.id
     })
-      .catch(e => {
-        console.log('error while voting: ', e)
-        return new Promise((resolve, reject) => {
-          reject(new Error(e))
-        })
+    .catch(e => {
+      console.log('error while voting: ', e)
+      return new Promise((resolve, reject) => {
+        reject(new Error(e))
       })
+    })
 
     return new Promise(resolve => {
       resolve(receipt)
@@ -161,6 +158,21 @@ module.exports = {
 
     return new Promise(resolve => {
       resolve(data)
+    })
+  },
+  async updateUserWeightByAddress (address, weight) {
+    const user = await User.findOne({
+      where: {
+        address: address
+      }
+    }).then((user) => {
+      if (user) { // update
+        return user.update({ weight: weight })
+      }
+      return user
+    })
+    return new Promise(resolve => {
+      resolve(user)
     })
   }
 }
