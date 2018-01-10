@@ -66,7 +66,6 @@ module.exports = {
         'yes_count': 0,
         'abstentions_count': 0,
         'no_count': 0
-
       }))
     })
   },
