@@ -6,3 +6,5 @@ yarn.lock
 yarn-error.log
 package-lock.json
 /server/lib/access.log
+/keys
+/.DS_Store

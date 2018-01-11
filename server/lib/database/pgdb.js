@@ -9,6 +9,17 @@ const Receipt = models.receipt
 const { findOrCreate, upsert } = utils
 
 module.exports = {
+  async getVisibleSubjects () {
+    const subjects = await Subject.findAll({
+      where: {
+        visible: 1
+      }
+    })
+
+    return new Promise(resolve => {
+      resolve({data: subjects})
+    })
+  },
   async getSubject (subjectId) {
     const subject = await Subject.find({
       where: {
@@ -55,7 +66,6 @@ module.exports = {
         'yes_count': 0,
         'abstentions_count': 0,
         'no_count': 0
-
       }))
     })
   },

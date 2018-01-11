@@ -11,7 +11,7 @@ const db = require('../models')
 const cors = require('cors')
 const morgan = require('morgan')
 const env = require('decentraland-commons').env
-const ethUtils = require('./ethereum/utils')
+// const ethUtils = require('./ethereum/utils')
 
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), {flags: 'a'})
 app.use(morgan('combined', {stream: accessLogStream})) // logger

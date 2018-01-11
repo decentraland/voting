@@ -53,4 +53,18 @@ router.get('/:subject', async (req, res) => {
   }
 })
 
+router.get('/subjects/list', async (req, res) => {
+  try {
+    const data = await pgdb
+      .getVisibleSubjects()
+      .then(data => data)
+
+    res
+      .status(200)
+      .json(data)
+  } catch (error) {
+    res.status(500).json({ error: 'System Error 500' })
+  }
+})
+
 module.exports = router
