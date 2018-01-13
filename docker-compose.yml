@@ -11,6 +11,7 @@ services:
 
   web_server:
     build: ./server
+    command: npm start
     networks:
       inner: {}
     links:
@@ -21,21 +22,26 @@ services:
       - .env
     ports:
       - 3001:3001
-    # we cannot use volumes for the moment until we solve the problem with private repos
-    # volumes:
-      # - $PWD/server:/app
+    volumes:
+      - $PWD/server/:/app
+      - /app/node_modules
 
   web_client:
     build: ./webapp
+    command: npm start
     networks:
       inner: {}
     depends_on:
       - db
       - web_server
     ports:
-      - 8080:8080
-    # volumes:
-      # - $PWD/web_app/src:/app
+      - 8080:3000
+    volumes:
+      - $PWD/webapp/:/app
+      - /app/node_modules
+
+volumes:
+  node_modules:
 
 networks:
   inner:
