@@ -1,9 +1,9 @@
 module.exports = {
   'development': {
     'username': 'postgres',
-    'password': '123456',
-    'database': 'voting_schema',
-    'host': '127.0.0.1',
+    'password': '',
+    'database': 'postgres',
+    'host': 'postgres',
     'dialect': 'postgres',
     'define': {
       'underscored': true

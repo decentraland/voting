@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  db:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    networks:
+      inner: {}
+
+  web_server:
+    build: ./server
+    networks:
+      inner: {}
+    links:
+      - db
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - 3001:3001
+    # we cannot use volumes for the moment until we solve the problem with private repos
+    # volumes:
+      # - $PWD/server:/app
+
+  web_client:
+    build: ./webapp
+    networks:
+      inner: {}
+    depends_on:
+      - db
+      - web_server
+    ports:
+      - 8080:8080
+    # volumes:
+      # - $PWD/web_app/src:/app
+
+networks:
+  inner:
+    driver: bridge

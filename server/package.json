@@ -33,6 +33,7 @@
     "decentraland-commons": "git+https://github.com/decentraland/commons.git#release",
     "express": "4.16.2",
     "joi": "13.0.2",
+    "mysql2": "1.5.1",
     "pg": "7.4.0",
     "pg-hstore": "2.3.2",
     "ramda": "0.25.0",
