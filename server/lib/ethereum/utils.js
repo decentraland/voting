@@ -3,7 +3,7 @@ const utils = require('decentraland-commons').utils
 
 const MANAToken = require('../contracts/MANAToken')
 const pgdb = require('../database/pgdb')
-const { getMessage, getServerKey } = require('./constanst')
+const { getMessage, getServerKey } = require('./constants')
 
 class EthUtils {
   async init () {
