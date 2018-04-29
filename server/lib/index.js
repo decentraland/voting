@@ -56,7 +56,9 @@ env.load()
 app.listen(PORT, () => {
   console.log(`Listen to port ${PORT}`)
   // ethUtils.watchBlocks()
-  db.sequelize.sync()
+  try {
+    db.sequelize.sync()
+  } catch (error) {
+    console.log(`Problem connecting to the database ${error}`)
+  }
 })
-
-

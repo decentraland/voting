@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  db:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    networks:
+      inner: {}
+
+  web_server:
+    build: ./server
+    command: npm start
+    networks:
+      inner: {}
+    links:
+      - db
+    depends_on:
+      - db
+    env_file:
+      - .env
+    ports:
+      - 3001:3001
+    volumes:
+      - $PWD/server/:/app
+      - /app/node_modules
+
+  web_client:
+    build: ./webapp
+    command: npm start
+    networks:
+      inner: {}
+    depends_on:
+      - db
+      - web_server
+    ports:
+      - 8080:3000
+    volumes:
+      - $PWD/webapp/:/app
+      - /app/node_modules
+
+volumes:
+  node_modules:
+
+networks:
+  inner:
+    driver: bridge

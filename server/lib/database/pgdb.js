@@ -17,7 +17,7 @@ module.exports = {
     })
 
     return new Promise(resolve => {
-      resolve({data: subjects})
+      resolve(subjects)
     })
   },
   async getSubject (subjectId) {
